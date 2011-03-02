@@ -1,0 +1,8 @@
+This is a text adventure across a developing world. This is my first Python project, and I hit upon the idea of creating a text adventure after racking my brain for a project idea that was in-scope. I.e., that wasn't my own Twitter client or blogging platform.
+
+I'm paying little heed to best practices, as (a) I don't know them and (b) this is a project about exploring Python as much as it is about exploring a fantasy land with towns like "Kittyland." Oh, and this is a family project of ours.
+
+My intermediate aspiration is to create a text-adventure engine that will make it easy to develop adventures in other worlds. We'll see how this goes.
+
+Daniel Black
+110302
