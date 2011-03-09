@@ -26,7 +26,7 @@ for line in localeSource:
         
         initialList.append(re.split(':', line))
 
-print initialList
+# print initialList
 
 # Now this list is kinda janky: each line was split into a two-term list. The crappy algorithm I came up with uses a single list, where each pair-of-interest is comprised of sequential terms. We need to make this.
 
@@ -38,7 +38,71 @@ for littleList in initialList:
         
         # print littleList[n]
 
-# With the list now as we'd like it, 
+# print newInitialList
+
+# With the list now as we'd like it, it's time to build the list of lists of dictionaries. Thing is, as we can't insert items into a list into arbitrary indices, we need to create the nested lists with a conservative number of spots. We'll use the number of locales n and create what amounts to an nxn matrix--n lists with n terms each. Of course, this will be overly large, so we may thereafter need to remove items, for performance. But, actually, we're not using nested lists for performance.
+
+# To fine the number of locales, we need to know how many entries each locale has, and divide the length of newInitialList by that...and by two--one entry is two elements, the eventual key-value pair.
+
+numAttr = 9 #The number of attributes each locale has.
+
+numLocales = len(newInitialList) / numAttr / 2
+
+# print "There are %f locales." % numLocales
+
+# Now create the final list with nxn lists nested inside.
+
+finalList = []
+
+for i in range(numLocales):
+    finalList.append([])
+    for j in range(numLocales):
+        finalList[i].append(j)
+
+# print finalList
+
+# Now...to populate the list. The most difficult part will be pulling the 2*numLocales entries from newInitialList and creating a dictionary out of them. Or will it?
+
+# print len(newInitialList)
+# print newInitialList
+for i in range(numLocales):
+    for j in range(numLocales):
+        for n in range(len(newInitialList)-18):
+            if newInitialList[n] == "x" and \
+                    newInitialList[n+1] == str(j) and \
+                    newInitialList[n+2] == "y" and \
+                    newInitialList[n+3] == str(i):
+                        # print "The things in order are:" +  '\n' + \
+                        # newInitialList[n] + "=" +  newInitialList[n+1] + '\n' + \
+                        # newInitialList[n+2] + "=" + newInitialList[n+3] + '\n' + \
+                        # newInitialList[n+4] + "=" + newInitialList[n+5] + '\n' + \
+                        # newInitialList[n+6] + "=" + newInitialList[n+7] + '\n'
+                        intermeDict = {}
+                        intermeDict[newInitialList[n]]=newInitialList[n+1]
+                        intermeDict[newInitialList[n+2]]=newInitialList[n+3]
+                        intermeDict[newInitialList[n+4]]=newInitialList[n+5]
+                        intermeDict[newInitialList[n+6]]=newInitialList[n+7]
+                        intermeDict[newInitialList[n+8]]=newInitialList[n+9]
+                        intermeDict[newInitialList[n+10]]=newInitialList[n+11]
+                        intermeDict[newInitialList[n+12]]=newInitialList[n+13]
+                        intermeDict[newInitialList[n+14]]=newInitialList[n+15]
+                        intermeDict[newInitialList[n+16]]=newInitialList[n+17]
+
+                        print newInitialList[n] + "=" + newInitialList[n+1]
+                        print newInitialList[n+2] + "=" + newInitialList[n+3]
+                        print newInitialList[n+4] + "=" + newInitialList[n+5]
+                        print newInitialList[n+6] + "=" + newInitialList[n+7]
+                        print newInitialList[n+8] + "=" + newInitialList[n+9]
+                        print newInitialList[n+10] + "=" + newInitialList[n+11]
+                        print newInitialList[n+12] + "=" + newInitialList[n+13]
+                        print newInitialList[n+14] + "=" + newInitialList[n+15]
+                        print newInitialList[n+16] + "=" + newInitialList[n+17]
+                        # print intermeDict
+                        # print intermeDict
+                        # for k, v in intermeDict:
+                        #     print "The value of %s is %s." % (k, v)
+                        # print intermeDict
+                        finalList[i][j] = intermeDict 
 
 
-print newInitialList
+# print finalList
