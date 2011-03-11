@@ -51,6 +51,7 @@ numLocales = len(newInitialList) / numAttr / 2
 # print "There are %f locales." % numLocales
 
 # Now create the final list with nxn lists nested inside.
+# 110310: Rather than just creating numbers, we'll use the value of *scaryLandDesc* is the default. This way the full map is preset and we only need add more locales to flesh it out. BRILLIANT MOTHER FUCKER!
 
 finalList = []
 
@@ -64,10 +65,12 @@ for i in range(numLocales):
 # Now...to populate the list. The most difficult part will be pulling the 2*numLocales entries from newInitialList and creating a dictionary out of them. Or will it?
 
 # print len(newInitialList)
-# print newInitialList
+# for m in range(len(newInitialList)):
+#     print newInitialList.pop(m)
+
 for i in range(numLocales):
     for j in range(numLocales):
-        for n in range(len(newInitialList)-18):
+        for n in range(len(newInitialList)):
             if newInitialList[n] == "x" and \
                     newInitialList[n+1] == str(j) and \
                     newInitialList[n+2] == "y" and \
@@ -106,3 +109,18 @@ for i in range(numLocales):
 
 
 # print finalList
+
+# You see, this works nicely now...except. Except for the fact that we have extraneous terms, the filler terms. Maybe instead of numbers I should prime finalList with empty strings. 
+
+# There are various ways to pop those elements out. We might try to use the .items() method and catching the AttributeError when we hit an element that's not a dictionary. Else, we can use isinstance(var, dict) to see if the element is an instance of a particular class (in this case, the dict class). We use the latter here.
+
+# Dilemma: how to iterate over the lists of dictionaries and numbers to remove the numbers. Sure, we can use the length of the list, but we'll create indices larger than the length once we pop entries. Right?
+
+# Also, there's the issue that there may be (and in our test case are) lists without any localeEntries in them. So not only do we need to remove terms from lists, we need to remove whole lists. Unless...
+
+# ...unless we don't put numbers in our seed "array" but rather something like "Here be monsters." That way, we can check dynamically against that, and it fits the game. We'll need a similar boundary condition for the entire map.
+
+# What if we initialize the entire map, for the entire known world, and use "Here be monsters" as the filler information? Even use "{'shortDesc': 'Here be monsters." for all those spaces we may yet fill? YES!
+
+# for i in len(finalList):
+#     for j in len
