@@ -1,0 +1,9 @@
+# This is a file of the various descriptions for areas not yet available.
+# One line per such description.
+
+This way is blocked by dense undergrowth.
+You see a deep, impassable fissure.
+A thick, viscous mire lies this way.
+A rusted tangle of iron prevents you from going this way.
+The ground drops away to a deep crevasse. There is no way across.
+A tall rock wall obscures view and passage here.

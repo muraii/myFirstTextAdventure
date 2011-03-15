@@ -2,7 +2,16 @@
 import re
 
 # First, open the locale attributes file.
-localeSource = open('localeAttributes.py','r')
+localeSource = open('localeAttributes.txt', 'r')
+
+# Now define the list of strings for the "Here be monsters" shortDesc.
+
+hereBeFile = open('hereBeMonsters.txt', 'r')
+hereBeList = []
+for line in hereBeFile:
+    hereBeList.append(line)
+
+print hereBeList
 
 # Now populate the list of lists of dicts with locale data.
 # First, compile the search pattern for comments and empty lines.
@@ -48,7 +57,7 @@ numAttr = 9 #The number of attributes each locale has.
 
 numLocales = len(newInitialList) / numAttr / 2
 
-# print "There are %f locales." % numLocales
+print "There are %f locales." % numLocales
 
 # Now create the final list with nxn lists nested inside.
 # 110310: Rather than just creating numbers, we'll use the value of *scaryLandDesc* is the default. This way the full map is preset and we only need add more locales to flesh it out. BRILLIANT MOTHER FUCKER!
@@ -58,13 +67,20 @@ finalList = []
 for i in range(numLocales):
     finalList.append([])
     for j in range(numLocales):
-        finalList[i].append(j)
+#        finalList[i].append(j)
+        if not ignorePattern.search(hereBeList[j % len(hereBeList)]):
+            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList)].rstrip('\n').lstrip()})
+        elif not ignorePattern.search(hereBeList[j % len(hereBeList) + 1]):
+            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList) + 1].rstrip('\n').lstrip()})
+        else:
+            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList) + 2].rstrip('\n').lstrip()})
+        
 
 # print finalList
 
 # Now...to populate the list. The most difficult part will be pulling the 2*numLocales entries from newInitialList and creating a dictionary out of them. Or will it?
 
-# print len(newInitialList)
+print len(newInitialList)
 # for m in range(len(newInitialList)):
 #     print newInitialList.pop(m)
 
@@ -108,7 +124,7 @@ for i in range(numLocales):
                         finalList[i][j] = intermeDict 
 
 
-# print finalList
+print finalList
 
 # You see, this works nicely now...except. Except for the fact that we have extraneous terms, the filler terms. Maybe instead of numbers I should prime finalList with empty strings. 
 
