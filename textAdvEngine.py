@@ -11,7 +11,7 @@ hereBeList = []
 for line in hereBeFile:
     hereBeList.append(line)
 
-print hereBeList
+# print hereBeList
 
 # Now populate the list of lists of dicts with locale data.
 # First, compile the search pattern for comments and empty lines.
@@ -51,16 +51,16 @@ for littleList in initialList:
 
 # With the list now as we'd like it, it's time to build the list of lists of dictionaries. Thing is, as we can't insert items into a list into arbitrary indices, we need to create the nested lists with a conservative number of spots. We'll use the number of locales n and create what amounts to an nxn matrix--n lists with n terms each. Of course, this will be overly large, so we may thereafter need to remove items, for performance. But, actually, we're not using nested lists for performance.
 
-# To fine the number of locales, we need to know how many entries each locale has, and divide the length of newInitialList by that...and by two--one entry is two elements, the eventual key-value pair.
+# To find the number of locales, we need to know how many entries each locale has, and divide the length of newInitialList by that...and by two--one entry is two elements, the eventual key-value pair.
 
 numAttr = 9 #The number of attributes each locale has.
 
 numLocales = len(newInitialList) / numAttr / 2
 
-print "There are %f locales." % numLocales
+# print "There are %f locales." % numLocales
 
 # Now create the final list with nxn lists nested inside.
-# 110310: Rather than just creating numbers, we'll use the value of *scaryLandDesc* is the default. This way the full map is preset and we only need add more locales to flesh it out. BRILLIANT MOTHER FUCKER!
+# 110310: Rather than just creating numbers, we'll use the value of *scaryLandDesc* as the default. This way the full map is preset and we only need add more locales to flesh it out. BRILLIANT MOTHER FUCKER!
 
 finalList = []
 
@@ -69,11 +69,12 @@ for i in range(numLocales):
     for j in range(numLocales):
 #        finalList[i].append(j)
         if not ignorePattern.search(hereBeList[j % len(hereBeList)]):
-            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList)].rstrip('\n').lstrip()})
+            # Amending this to indicate the "hereBeMonsters" locales are off-limits. Will compare x attribute later. 
+            finalList[i].append({'x' : -1, 'shortDesc' : hereBeList[j % len(hereBeList)].rstrip('\n').lstrip()})
         elif not ignorePattern.search(hereBeList[j % len(hereBeList) + 1]):
-            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList) + 1].rstrip('\n').lstrip()})
+            finalList[i].append({'x' : -1, 'shortDesc' : hereBeList[j % len(hereBeList) + 1].rstrip('\n').lstrip()})
         else:
-            finalList[i].append({'shortDesc' : hereBeList[j % len(hereBeList) + 2].rstrip('\n').lstrip()})
+            finalList[i].append({'x' : -1, 'shortDesc' : hereBeList[j % len(hereBeList) + 2].rstrip('\n').lstrip()})
         
 
 # print finalList
@@ -107,16 +108,15 @@ for i in range(numLocales):
                         intermeDict[newInitialList[n+14]]=newInitialList[n+15]
                         intermeDict[newInitialList[n+16]]=newInitialList[n+17]
 
-                        print newInitialList[n] + "=" + newInitialList[n+1]
-                        print newInitialList[n+2] + "=" + newInitialList[n+3]
-                        print newInitialList[n+4] + "=" + newInitialList[n+5]
-                        print newInitialList[n+6] + "=" + newInitialList[n+7]
-                        print newInitialList[n+8] + "=" + newInitialList[n+9]
-                        print newInitialList[n+10] + "=" + newInitialList[n+11]
-                        print newInitialList[n+12] + "=" + newInitialList[n+13]
-                        print newInitialList[n+14] + "=" + newInitialList[n+15]
-                        print newInitialList[n+16] + "=" + newInitialList[n+17]
-                        # print intermeDict
+ #                        print newInitialList[n] + "=" + newInitialList[n+1]
+ #                        print newInitialList[n+2] + "=" + newInitialList[n+3]
+ #                        print newInitialList[n+4] + "=" + newInitialList[n+5]
+ #                        print newInitialList[n+6] + "=" + newInitialList[n+7]
+ #                        print newInitialList[n+8] + "=" + newInitialList[n+9]
+ #                        print newInitialList[n+10] + "=" + newInitialList[n+11]
+ #                        print newInitialList[n+12] + "=" + newInitialList[n+13]
+ #                        print newInitialList[n+14] + "=" + newInitialList[n+15]
+ #                        print newInitialList[n+16] + "=" + newInitialList[n+17]
                         # print intermeDict
                         # for k, v in intermeDict:
                         #     print "The value of %s is %s." % (k, v)
@@ -126,17 +126,64 @@ for i in range(numLocales):
 
 print finalList
 
-# You see, this works nicely now...except. Except for the fact that we have extraneous terms, the filler terms. Maybe instead of numbers I should prime finalList with empty strings. 
+# Need to experiment to be able to return any locale attribute. Currently, these are stored as key-value pairs.
 
-# There are various ways to pop those elements out. We might try to use the .items() method and catching the AttributeError when we hit an element that's not a dictionary. Else, we can use isinstance(var, dict) to see if the element is an instance of a particular class (in this case, the dict class). We use the latter here.
+# print """
+# 
+# 
+# 
+# """
+# print finalList[0][0]
+# print """
+# 
+# 
+# 
+# """
+# print finalList[0][0]['x']
+# 110921 Initial stab at navigation. Use while loop to maintain persistence, exiting on "QUIT."
+# 110922 Problem is, the locales that are off-limit exist, so are iterable, but don't have "longDesc" keys. Need to check not only for whether the chosen direction is in-scope, but also if it has "longDesc".
+#        Fixed.
 
-# Dilemma: how to iterate over the lists of dictionaries and numbers to remove the numbers. Sure, we can use the length of the list, but we'll create indices larger than the length once we pop entries. Right?
+initialPosition = [0,0]
+print finalList[initialPosition[0]][initialPosition[1]]["longDesc"]
+position = initialPosition
+directive = raw_input('Where will you go? \n')
+print len(finalList)
+print len(finalList[0])
+# directive = "QUIT"
+while directive != "QUIT":
+    # Need to parse 'directive' for directions
+    if directive == "N":
+        if position[1] == 0:
+            print "You can't go that way asshole."
+        elif finalList[position[0]][position[1] - 1]["x"] == -1:
+            print " %s \n You cannot go that way." % finalList[position[0]][position[1] - 1]["shortDesc"]
+        else:
+            position[1] -= 1
+            print finalList[position[0]][position[1]]["longDesc"]
+    elif directive == "S":
+        if position[1] == len(finalList):
+            print "You can't go that way asshole."
+        elif finalList[position[0]][position[1] + 1]["x"] == -1:
+            print " %s \n You cannot go that way." % finalList[position[0]][position[1] + 1]["shortDesc"]
+        else:
+            position[1] += 1
+            print finalList[position[0]][position[1]]["longDesc"]
+    elif directive == "E":
+        if position[0] == len(finalList[0]):
+            print "You can't go that way asshole."
+        elif finalList[position[0] + 1][position[1]]["x"] == -1:
+            print " %s \n You cannot go that way." % finalList[position[0] + 1][position[1]]["shortDesc"]
+        else:
+            position[0] += 1 
+            print finalList[position[0]][position[1]]["longDesc"]
+    elif directive == "W":
+        if position[0] == 0:
+            print "You can't go that way asshole."
+        elif finalList[position[0] - 1][position[1]]["x"] == -1:
+            print " %s \n You cannot go that way." % finalList[position[0] - 1][position[1]]["shortDesc"]
+        else:
+            position[0] -= 1
+            print finalList[position[0]][position[1]]["longDesc"]
 
-# Also, there's the issue that there may be (and in our test case are) lists without any localeEntries in them. So not only do we need to remove terms from lists, we need to remove whole lists. Unless...
-
-# ...unless we don't put numbers in our seed "array" but rather something like "Here be monsters." That way, we can check dynamically against that, and it fits the game. We'll need a similar boundary condition for the entire map.
-
-# What if we initialize the entire map, for the entire known world, and use "Here be monsters" as the filler information? Even use "{'shortDesc': 'Here be monsters." for all those spaces we may yet fill? YES!
-
-# for i in len(finalList):
-#     for j in len
+    directive = raw_input('Where will you go? \n')
