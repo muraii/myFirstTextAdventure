@@ -1,0 +1,1 @@
+Use ncurses or urwid to set console widgets, e.g., to separate input from display/output a la TinyFugue.
