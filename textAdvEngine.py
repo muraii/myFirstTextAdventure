@@ -47,7 +47,7 @@ for littleList in initialList:
 
 # To find the number of locales, we need to know how many entries each locale has, and divide the length of newInitialList by that...and by two--one entry is two elements, the eventual key-value pair.
 
-numAttr = 9 #The number of attributes each locale has.
+numAttr = 11 #The number of attributes each locale has.
 numLocales = len(newInitialList) / numAttr / 2
 
 # print "There are %f locales." % numLocales
@@ -97,19 +97,22 @@ for i in range(numLocales):
             if k < 2:
                 if not ignorePattern.search(hereBeList[k][k % (len(hereBeList) - 2) + 2]):
                     # Amending this to indicate the "hereBeMonsters" locales are off-limits. Will compare x attribute.
-                    finalList[i][j].append({'x' : -1, 'ijk': "%i %i %i" % (i, j, k),  'shortDesc' : hereBeList[k][i % (len(hereBeList) - 2) + 2].rstrip('\n').lstrip()})
+                    finalList[i][j].append({"navigable" : "no", 'ijk': "%i %i %i" % (i, j, k),  'shortDesc' : hereBeList[k][i % (len(hereBeList) - 2) + 2].rstrip('\n').lstrip()})
             else:
                 if not ignorePattern.search(hereBeList[2][k % (len(hereBeList) - 2) + 2]):
                     # Amending this to indicate the "hereBeMonsters" locales are off-limits. Will compare x attribute.
-                    finalList[i][j].append({'x' : -1, 'ijk': "%i %i %i" % (i, j, k),  'shortDesc' : hereBeList[2][i % (len(hereBeList) - 2) + 2].rstrip('\n').lstrip()})
+                    finalList[i][j].append({"navigable" : "no", 'ijk': "%i %i %i" % (i, j, k),  'shortDesc' : hereBeList[2][i % (len(hereBeList) - 2) + 2].rstrip('\n').lstrip()})
 
 
-for i in range(numLocales):
-    for j in range (numLocales):
-        # print "(%i, %i)" % (i, j),
-        print finalList[j][i]
+# for i in range(numLocales):
+#     for j in range (numLocales):
+#         # print "(%i, %i)" % (i, j),
+#         print finalList[j][i]
+# 
+# wait = raw_input('Break now.')
 
-wait = raw_input('Break now.')
+
+
 # print "This is the final list."
 # print finalList
 
@@ -146,6 +149,7 @@ for i in range(numLocales):
                             intermeDict[newInitialList[n+14]]=newInitialList[n+15]
                             intermeDict[newInitialList[n+16]]=newInitialList[n+17]
                             intermeDict[newInitialList[n+18]]=newInitialList[n+19]
+                            intermeDict[newInitialList[n+20]]=newInitialList[n+21]
     
      #                        print newInitialList[n] + "=" + newInitialList[n+1]
      #                        print newInitialList[n+2] + "=" + newInitialList[n+3]
@@ -165,12 +169,13 @@ for i in range(numLocales):
                             finalList[k][j][i] = intermeDict 
 
 
-for i in range(numLocales):
-    for j in range (numLocales):
-        # print "(%i, %i)" % (i, j),
-        for k in range(numLocales):
-            print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
-            wait=raw_input("Dude there are a lot of these.")
+# This allows testing all locales.
+# for i in range(numLocales):
+#     for j in range (numLocales):
+#         # print "(%i, %i)" % (i, j),
+#         for k in range(numLocales):
+#             print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
+#             wait=raw_input("Dude there are a lot of these.")
 
 # Need to experiment to be able to return any locale attribute. Currently, these are stored as key-value pairs.
 
@@ -190,68 +195,222 @@ for i in range(numLocales):
 # 110922 Problem is, the locales that are off-limit exist, so are iterable, but don't have "longDesc" keys. Need to check not only for whether the chosen direction is in-scope, but also if it has "longDesc".
 #        Fixed.
 
-initialPosition = [0,0,0]
-print finalList[initialPosition[0]][initialPosition[1]][initialPosition[2]]["longDesc"]
-# initialPosition = [0,0]
-# Note that the coordinate in finalList is effectively (y, x), so ensure the indices are used this way.
-# print finalList[initialPosition[1]][initialPosition[0]]["longDesc"]
-position = initialPosition
-directive = raw_input('Where will you go? \n')
+
+#####################CHARACTER#####################
+
+# First, open the character attributes file.
+charSource = open('character_Daniel', 'r')
+
+initialCharList = []
+for line in charSource:
+    if not ignorePattern.search(line):
+        initialCharList.append(re.split(':', line.rstrip('\n').lstrip()))
+
+# print initialCharList
+# boobs = raw_input("go")
+
+charDict = {}
+for item in initialCharList:
+    charDict[item[0]] = item[1]
+# print charDict
+
+
+boobs = raw_input("go")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################/CHARACTER#####################
+
+
+# initialPosition = [0,0,0]
+# print finalList[initialPosition[0]][initialPosition[1]][initialPosition[2]]["longDesc"]
+charDict["x"] = int(charDict["x"])
+charDict["y"] = int(charDict["y"])
+charDict["z"] = int(charDict["z"])
+print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
+# position = initialPosition
+# charDict["x"] = initialPosition[0]
+# charDict["y"] = initialPosition[0]
+# charDict["z"] = initialPosition[0]
+directive = raw_input('What do you want to do? \n')
 # print len(finalList)
 # print len(finalList[0])
 # directive = "QUIT"
 while directive != "QUIT":
     # Need to parse 'directive' for directions
     if directive == "N":
-        if position[1] == 0:
+        if charDict["y"] == 0:
             print "You can't go that way asshole."
-        elif finalList[position[0]][position[1] - 1][position[2]]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0]][position[1] - 1][position[2]]["shortDesc"]
+        elif finalList[charDict["x"]][charDict["y"] - 1][charDict["z"]]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"]][charDict["y"] - 1][charDict["z"]]["shortDesc"]
         else:
-            position[1] -= 1
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
+            charDict["y"] -= 1
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
     elif directive == "S":
-        if position[1] == numLocales - 1:
+        if charDict["y"] == numLocales - 1:
             print "You can't go that way asshole."
-        elif finalList[position[0]][position[1] + 1][position[2]]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0]][position[1] + 1][position[2]]["shortDesc"]
+        elif finalList[charDict["x"]][charDict["y"] + 1][charDict["z"]]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"]][charDict["y"] + 1][charDict["z"]]["shortDesc"]
         else:
-            position[1] += 1
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
+            charDict["y"] += 1
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
     elif directive == "E":
-        if position[0] == numLocales - 1:
+        if charDict["x"] == numLocales - 1:
             print "You can't go that way asshole."
-        elif finalList[position[0] + 1][position[1]][position[2]]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0] + 1][position[1]][position[2]]["shortDesc"]
+        elif finalList[charDict["x"] + 1][charDict["y"]][charDict["z"]]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"] + 1][charDict["y"]][charDict["z"]]["shortDesc"]
         else:
-            position[0] += 1 
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
-    elif directive == "W":
-        if position[0] == 0:
-            print "You can't go that way asshole."
-        elif finalList[position[0] - 1][position[1]][position[2]]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0] - 1][position[1]][position[2]]["shortDesc"]
-        else:
-            position[0] -= 1
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
-    elif directive == "U":
-        if position[2] == numLocales - 1: 
-            print "You can't go that way asshole."
-        elif finalList[position[0]][position[1]][position[2] + 1]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0]][position[1]][position[2] + 1]["shortDesc"]
-        else:
-            position[2] += 1 
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
-    elif directive == "D":
-        if position[2] == 0:
-            print "You can't go that way asshole."
-        elif finalList[position[0]][position[1]][position[2] - 1]["x"] == -1:
-            print " %s \n You cannot go that way." % finalList[position[0]][position[1]][position[2] - 1]["shortDesc"]
-        else:
-            position[2] -= 1
-            print finalList[position[0]][position[1]][position[2]]["longDesc"]
+            charDict["x"] += 1 
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
 
-    directive = raw_input('Where will you go? \n')
+            # Also consider that you don't want to print a blank string. If any of these item strings are "" that's what you'll get.
+            # Note, too, that not every location will have "a large shelf" containing everything. You'll need to add a few additional
+            # components as part of your locale attributes, e.g., "storage" = "A large shelf", etc. Some things might be on the floor,
+            # some in the "storage" structure, and some...in *another* storage structure?
+            print "A large shelf contains a %s, a %s, a %s, a %s, and a %s" % \
+                   (finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"], \
+                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_2"], \
+                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_3"], \
+                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_4"], \
+                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_5"])
+    elif directive == "W":
+        if charDict["x"] == 0:
+            print "You can't go that way asshole."
+        elif finalList[charDict["x"] - 1][charDict["y"]][charDict["z"]]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"] - 1][charDict["y"]][charDict["z"]]["shortDesc"]
+        else:
+            charDict["x"] -= 1
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
+    elif directive == "U":
+        if charDict["z"] == numLocales - 1: 
+            print "You can't go that way asshole."
+        elif finalList[charDict["x"]][charDict["y"]][charDict["z"] + 1]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"]][charDict["y"]][charDict["z"] + 1]["shortDesc"]
+        else:
+            charDict["z"] += 1 
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
+    elif directive == "D":
+        if charDict["z"] == 0:
+            print "You can't go that way asshole."
+        elif finalList[charDict["x"]][charDict["y"]][charDict["z"] - 1]["navigable"] == "no":
+            print " %s \n You cannot go that way." % finalList[charDict["x"]][charDict["y"]][charDict["z"] - 1]["shortDesc"]
+        else:
+            charDict["z"] -= 1
+            print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
+    elif directive == "I":
+        print "You are currently carrying the following items:"
+        for thing in ("item_1","item_2","item_3","item_4","item_5"):
+            if charDict[thing] != "":
+                print "    " + charDict[thing] 
+    elif re.match("^GET", directive) is not None:
+        directiveSplit = re.split(" ", directive)
+        # print directiveSplit
+        # print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"]
+        # print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"].upper()
+
+        # Check to make sure the player has room for the item, and take note of the open slot.
+        invCount = 0
+        openItem = []
+        for item in ("item_1","item_2","item_3","item_4","item_5"):
+            if charDict[item] != "":
+                print charDict[item]
+                invCount += 1
+            else:
+                openItem.append(item)
+                
+        if invCount == 5:
+            print "You have no room for that."
+        else:
+            for item in ("item_1","item_2","item_3","item_4","item_5"):
+                if re.match(directiveSplit[1].upper(), \
+                        finalList[charDict["x"]][charDict["y"]][charDict["z"]][item].upper()):
+                    charDict[openItem[0]] = \
+                        finalList[charDict["x"]][charDict["y"]][charDict["z"]][item]
+                    finalList[charDict["x"]][charDict["y"]][charDict["z"]][item] = "" # Need loop to check if there *are* any items before displaying list.
+                    print "You picked up %s." % charDict[openItem[0]]
+    elif re.match("^DROP", directive) is not None:
+        directiveSplit = re.split(" ", directive)
+        # First let's make sure we're dropping something we're carrying.
+        itemLocation = []
+        openLocation = []
+        openSlots = 0
+        for item in ("item_1","item_2","item_3","item_4","item_5"):
+            if re.match(directiveSplit[1].upper(),charDict[item].upper()):
+                itemLocation.append(item) # There may be multiple matches, so we'll keep 'em all.
+
+        if len(itemLocation) == 0:
+            "You aren't carrying any %s." % directiveSplit[1]
+        else:
+            for item in ("item_1","item_2","item_3","item_4","item_5"):
+                if finalList[charDict["x"]][charDict["y"]][charDict["z"]][item] == "":
+                    openLocation.append(item) 
+
+            # If there are open slots, DROP the item, else say there's no room.
+            if len(openLocation) > 0:
+                finalList[charDict["x"]][charDict["y"]][charDict["z"]][openLocation[0]] = charDict[itemLocation[0]] # DROP the first matched inventory item into the first open slot.
+                charDict[itemLocation[0]] = ""
+                print "You have dropped your %s." % finalList[charDict["x"]][charDict["y"]][charDict["z"]][openLocation[0]]
+            else:
+                print "There is no room for that here."
+
+
+                        
+                    
+    directive = raw_input('What do you want to do ? \n')
 
 
 # State 110923 : 11:33
