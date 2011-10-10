@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import re
+import readline # This allows raw_input() to understand backspaces
+readline # Here just to make the real-time parser think I'm using the module, so it won't highlight the import as a syntax error.
+
 
 # First, open the locale attributes file.
 localeSource = open('localeAttributes.txt', 'r')
@@ -166,16 +169,31 @@ for i in range(numLocales):
                             # print intermeDict
                             # Note x->j and y->i
                             # finalList[j][i] = intermeDict 
+
+                            # Before we write the dict to the entry, we'll convert any #-delimited value string into a dict.
+                            for m in intermeDict:
+                                if re.search("#", intermeDict[m]):
+                                    mDict = {}
+                                    a = 0
+                                    mList = re.split("#", intermeDict[m])
+                                    while a < len(mList) - 1:
+                                        mDict[mList[a]] = mList[a + 1]
+                                        a += 2
+                                    intermeDict[m] = mDict
+
+                            # Now the full list is ready to write to the location.
                             finalList[k][j][i] = intermeDict 
 
 
 # This allows testing all locales.
-# for i in range(numLocales):
-#     for j in range (numLocales):
-#         # print "(%i, %i)" % (i, j),
-#         for k in range(numLocales):
-#             print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
-#             wait=raw_input("Dude there are a lot of these.")
+for i in range(numLocales):
+    for j in range (numLocales):
+        # print "(%i, %i)" % (i, j),
+        for k in range(numLocales):
+            print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
+            wait=raw_input("Dude there are a lot of these.")
+
+print "The name of the item in (0, 0, 0) is %s." % finalList[0][0][0]["item_1"]["name"]
 
 # Need to experiment to be able to return any locale attribute. Currently, these are stored as key-value pairs.
 
@@ -212,7 +230,7 @@ for line in charSource:
 charDict = {}
 for item in initialCharList:
     charDict[item[0]] = item[1]
-# print charDict
+print charDict
 
 
 boobs = raw_input("go")
@@ -317,16 +335,16 @@ while directive != "QUIT":
             charDict["x"] += 1 
             print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
 
-            # Also consider that you don't want to print a blank string. If any of these item strings are "" that's what you'll get.
-            # Note, too, that not every location will have "a large shelf" containing everything. You'll need to add a few additional
+            # Note that not every location will have "a large shelf" containing everything. You'll need to add a few additional
             # components as part of your locale attributes, e.g., "storage" = "A large shelf", etc. Some things might be on the floor,
             # some in the "storage" structure, and some...in *another* storage structure?
-            print "A large shelf contains a %s, a %s, a %s, a %s, and a %s" % \
-                   (finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"], \
-                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_2"], \
-                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_3"], \
-                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_4"], \
-                   finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_5"])
+            itemString = ""
+            for item in ("item_1","item_2","item_3","item_4","item_5"):
+                if finalList[charDict["x"]][charDict["y"]][charDict["z"]][item] != "":
+                    itemString += finalList[charDict["x"]][charDict["y"]][charDict["z"]][item]
+
+            if itemString != "":
+                print "A large shelf contains " + itemString + "."
     elif directive == "W":
         if charDict["x"] == 0:
             print "You can't go that way asshole."
@@ -367,7 +385,7 @@ while directive != "QUIT":
         openItem = []
         for item in ("item_1","item_2","item_3","item_4","item_5"):
             if charDict[item] != "":
-                print charDict[item]
+                # print charDict[item]
                 invCount += 1
             else:
                 openItem.append(item)
@@ -406,9 +424,22 @@ while directive != "QUIT":
                 print "You have dropped your %s." % finalList[charDict["x"]][charDict["y"]][charDict["z"]][openLocation[0]]
             else:
                 print "There is no room for that here."
+    elif re.match("^LOOK", directive) is not None:
+        directiveSplit = re.split(" ", directive)
+        print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["longDesc"]
+        # Note that not every location will have "a large shelf" containing everything. You'll need to add a few additional
+        # components as part of your locale attributes, e.g., "storage" = "A large shelf", etc. Some things might be on the floor,
+        # some in the "storage" structure, and some...in *another* storage structure?
+        itemString = ""
+        for item in ("item_1","item_2","item_3","item_4","item_5"):
+            if finalList[charDict["x"]][charDict["y"]][charDict["z"]][item] != "":
+                itemString += finalList[charDict["x"]][charDict["y"]][charDict["z"]][item]
 
+        if itemString != "":
+            print "A large shelf contains " + itemString + "."
 
-                        
+    # else:
+        # Something like "I don't understand." This is the else clause for the whole interaction loop.
                     
     directive = raw_input('What do you want to do ? \n')
 

@@ -42,7 +42,7 @@ z:0
 navigable:
 shortDesc: This is a short description for (0, 0, 0)
 longDesc: This is a long description for (0, 0, 0)
-item_1:
+item_1: name#glaive#weight#2#size#med#wear#belt
 item_2:
 item_3:
 item_4:

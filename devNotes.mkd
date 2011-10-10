@@ -1,3 +1,4 @@
 * Use ncurses or urwid to set console widgets, e.g., to separate input from display/output a la TinyFugue.
 * Need to flesh out lots of data structure. Each locale should have different places to store items, e.g. "A <thing> and a <thing> sit on a large wooden shelf." This allows for staging items, and for a sense of interactivity. The player can TAKE something off the shelf and then DROP it on the floor.
 * Some items may be fragile. If they're just DROPped, they may break (roll vs. fragility). May need some broader syntax, like "PLACE <item> ON <storage>."
+* As part of the data structure, each item needs to be more than a string. Like, a dict, e.g., snargle = {"name" : "snargle", "location" : (1, 0, 0), "sturdiness" : "fragile"}. We can pass these objects around, but now instead of changing a string we have to change a dict, which may require the "item1" be a dict in the first place.
