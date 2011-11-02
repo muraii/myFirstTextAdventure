@@ -32,7 +32,9 @@ for line in localeSource:
         
         initialList.append(re.split(':', line))
 
-# print initialList
+print "Here is initialList."
+print initialList
+print "Here was initialList."
 
 # Now this list is kinda janky: each line was split into a two-term list. The crappy algorithm I came up with uses a single list, where each pair-of-interest is comprised of sequential terms. We need to make this.
 
@@ -176,6 +178,8 @@ for i in range(numLocales):
                                     mDict = {}
                                     a = 0
                                     mList = re.split("#", intermeDict[m])
+                                    if len(mList) % 2 != 0:
+                                        print "Warning: The number of delimited elements in %s is uneven. This means there is a key without a value." % m
                                     while a < len(mList) - 1:
                                         mDict[mList[a]] = mList[a + 1]
                                         a += 2
@@ -185,15 +189,15 @@ for i in range(numLocales):
                             finalList[k][j][i] = intermeDict 
 
 
-# This allows testing all locales.
-for i in range(numLocales):
-    for j in range (numLocales):
-        # print "(%i, %i)" % (i, j),
-        for k in range(numLocales):
-            print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
-            wait=raw_input("Dude there are a lot of these.")
-
-print "The name of the item in (0, 0, 0) is %s." % finalList[0][0][0]["item_1"]["name"]
+# # This allows testing all locales.
+# for i in range(numLocales):
+#     for j in range (numLocales):
+#         # print "(%i, %i)" % (i, j),
+#         for k in range(numLocales):
+#             print "%i, %i, %i:" % (k, j, i), finalList[k][j][i]
+#             wait=raw_input("Dude there are a lot of these.")
+# 
+# print "The name of the item in (0, 0, 0) is %s." % finalList[0][0][0]["item_1"]["name"]
 
 # Need to experiment to be able to return any locale attribute. Currently, these are stored as key-value pairs.
 
@@ -375,7 +379,7 @@ while directive != "QUIT":
             if charDict[thing] != "":
                 print "    " + charDict[thing] 
     elif re.match("^GET", directive) is not None:
-        directiveSplit = re.split(" ", directive)
+        directiveSplit = re.split(" ", directive) # Need to use this to parse the input for all possible values, not just the GET.
         # print directiveSplit
         # print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"]
         # print finalList[charDict["x"]][charDict["y"]][charDict["z"]]["item_1"].upper()
@@ -436,12 +440,56 @@ while directive != "QUIT":
                 itemString += finalList[charDict["x"]][charDict["y"]][charDict["z"]][item]
 
         if itemString != "":
-            print "A large shelf contains " + itemString + "."
+            print "A large shelf contains " + itemString + "." # This belongs in the locale, and each object should have its place in the locale.
 
     # else:
         # Something like "I don't understand." This is the else clause for the whole interaction loop.
                     
     directive = raw_input('What do you want to do ? \n')
+
+
+
+###################FILE SAVE###################
+print "Saving progress..."
+
+########### to do ######################################################
+# Need to create a list of attribute keys, and iterate over that list,
+# instead of iterating over keys in the locale. This will make the
+# save file structure like our initialization file, so we can
+#   a. read the file easily;
+#   b. reuse the same game loading code; and
+#   c. probably something else cool.
+########################################################################
+
+saveList = []
+for i in range(numLocales):
+    for j in range (numLocales):
+        # print "(%i, %i)" % (i, j),
+        for k in range(numLocales):
+            for key in finalList[k][j][i]:
+                if isinstance(finalList[k][j][i][key], str):
+                    saveStr = "%s: %s" % (key, finalList[k][j][i][key])
+                    saveList.append(saveStr)
+                    # print saveStr
+                    # d00d = raw_input('THIS SHIT IS REAL DAWG')
+                elif isinstance(finalList[k][j][i][key], dict):
+                    for key2 in finalList[k][j][i][key]:
+                        attrStr = ""
+                        attrStr = attrStr + "%s#%s#" % (key2, finalList[k][j][i][key][key2])
+                        # Strip the trailing octothorpe
+                        attrStr = attrStr[:len(attrStr) - 1]
+                    saveStr = "%s: %s" % (key, attrStr)
+                    saveList.append(saveStr)
+                    # print saveStr
+                    # d00d = raw_input('THIS SHIT IS REAL DAWG')
+
+
+# Now we write the save file.
+saveFile = open('saveFileName', 'w')
+saveFile.write('\n'.join(saveList))
+saveFile.close
+
+
 
 
 # State 110923 : 11:33

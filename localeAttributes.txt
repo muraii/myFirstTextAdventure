@@ -1,16 +1,4 @@
-# Specify the following information for each locale:
-
-# x:
-# y:
-# z:
-# navigable:
-# shortDesc:
-# longDesc:
-# item_1:
-# item_2:
-# item_3:
-# item_4:
-# item_5:
+# This is the initial state of the game.
 
 x: 1
 y: 0
