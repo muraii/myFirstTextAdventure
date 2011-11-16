@@ -460,34 +460,68 @@ print "Saving progress..."
 #   b. reuse the same game loading code; and
 #   c. probably something else cool.
 ########################################################################
+# First, open the locale attributes file.
+localeSourceAgain = open('localeAttributes.txt', 'r')
+i = 0
+attrKeyListInit = []
+attrKeyListFin = []
+for line in localeSourceAgain:
+    if not ignorePattern.search(line):
+        attrKeyListInit.append(re.split(':', line))
+        i += 1
+        if i == numAttr:
+            break
+print "Here is attrKeyListInit."
+print attrKeyListInit
+for attrList in attrKeyListInit:
+    attrKeyListFin.append(attrList[0])
+print "Here is attrKeyListFin."
+print attrKeyListFin
+print "Here is finalList 0 0 0"
+print finalList[0][0][0]
+print "Here is finalList 0 0 0 x"
+print finalList[0][0][0]['x']
+
+############ notes ##########################################################
+# So the deal is, the hereBeMonsters areas don't have an "x" attribute, which
+# breaks our save template below. Need to make hereBeMon areas compatible.
+############ /notes #########################################################
 
 saveList = []
 for i in range(numLocales):
     for j in range (numLocales):
         # print "(%i, %i)" % (i, j),
         for k in range(numLocales):
-            for key in finalList[k][j][i]:
+            # for key in finalList[k][j][i]:
+            for key in attrKeyListFin:
+                print "Here is finalList %i %i %i" % (k, j, i)
+                print finalList[k][j][i]
+                print "Here is finalList %i %i %i %s" % (k, j, i, key)
+                print finalList[k][j][i][key]
+                d00d = raw_input('THIS SHIT IS REAL DAWG')
                 if isinstance(finalList[k][j][i][key], str):
                     saveStr = "%s: %s" % (key, finalList[k][j][i][key])
                     saveList.append(saveStr)
                     # print saveStr
                     # d00d = raw_input('THIS SHIT IS REAL DAWG')
                 elif isinstance(finalList[k][j][i][key], dict):
+                    attrStr = ""
                     for key2 in finalList[k][j][i][key]:
-                        attrStr = ""
                         attrStr = attrStr + "%s#%s#" % (key2, finalList[k][j][i][key][key2])
-                        # Strip the trailing octothorpe
-                        attrStr = attrStr[:len(attrStr) - 1]
+                    # Strip the trailing octothorpe
+                    attrStr = attrStr[:len(attrStr) - 1]
                     saveStr = "%s: %s" % (key, attrStr)
                     saveList.append(saveStr)
                     # print saveStr
                     # d00d = raw_input('THIS SHIT IS REAL DAWG')
-
-
-# Now we write the save file.
-saveFile = open('saveFileName', 'w')
-saveFile.write('\n'.join(saveList))
-saveFile.close
+# 
+# 
+# # Ask user for save filename of choice.
+# saveFileName = raw_input('Save game filename: ')
+# # Now we write the save file.
+# saveFile = open(saveFileName, 'w')
+# saveFile.write('\n'.join(saveList))
+# saveFile.close
 
 
 
