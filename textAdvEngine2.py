@@ -8,6 +8,13 @@ readline # Here just to make the real-time parser think I'm using the module, so
 ignorePattern = re.compile('^#\s\w.|^\n')
 scrubNewLines = re.compile('^.*')
 
+# To find the number of locales, we need to know how many entries each
+# locale has, and divide the length of newInitialList by that...and by
+# two--one entry is two elements, the eventual key-value pair.
+
+numAttr = 11 #The number of attributes each locale has.
+numLocales = len(newInitialList) / numAttr / 2
+
 ################# What to do next #########################################################################
 # - Ensure functions return something as appropriate. They can return a collection of things if necessary.
 # - Change variable names so there's no human confusion, even if namespaces won't collide.
@@ -57,13 +64,6 @@ def initializeWorld(sourceWorldFile, defaultAttrList):
     # be overly large, so we may thereafter need to remove items, for
     # performance. But, actually, we're not using nested lists for performance.
     
-    # To find the number of locales, we need to know how many entries each
-    # locale has, and divide the length of newInitialList by that...and by
-    # two--one entry is two elements, the eventual key-value pair.
-    
-    numAttr = 11 #The number of attributes each locale has.
-    numLocales = len(newInitialList) / numAttr / 2
-
     # Now define the list of strings for the "Here be monsters" shortDesc.
     hereBeList = []
     hereBeList.append([]) # List to contain hereBe_surface descriptions.
@@ -149,6 +149,7 @@ def initializeWorld(sourceWorldFile, defaultAttrList):
     
                                 # Now the full list is ready to write to the location.
                                 finalList[k][j][i] = intermeDict 
+    return finalList #Name to be changed...somewhere.
 
     # This allows testing all locales.
     for i in range(numLocales):
@@ -333,21 +334,33 @@ def interactionLoop(finalList, charDict, numLocales): #Change these variable nam
 ###################FILE SAVE###################
 print "Saving progress..."
 
-for i in range(numLocales):
-    for j in range (numLocales):
-        # print "(%i, %i)" % (i, j),
-        for k in range(numLocales):
-            for key in finalList[k][j][i]:
-                if isinstance(finalList[k][j][i][key], str):
-                    saveStr = "%s: %s" % (key, finalList[k][j][i][key])
-                    print saveStr
-                    d00d = raw_input('THIS SHIT IS REAL DAWG')
-                elif isinstance(finalList[k][j][i][key], dict):
-                    for key2 in finalList[k][j][i][key]:
-                        attrStr = ""
-                        attrStr = attrStr + "%s#%s#" % (key2, finalList[k][j][i][key][key2])
-                        # Strip the trailing octothorpe
-                        attrStr = attrStr[:len(attrStr) - 1]
-                    saveStr = "%s: %s" % (key, attrStr)
-                    print saveStr
-                    d00d = raw_input('THIS SHIT IS REAL DAWG')
+def saveWorld(finalList, saveFileName):
+
+    # We'll build the save file as a list.
+    saveList = []
+    # We prepare the save file one line-string at a time.
+    for i in range(numLocales):
+        for j in range(numLocales):
+            # print "(%i, %i)" % (i, j),
+            for k in range(numLocales):
+                for key in finalList[k][j][i]:
+                    if isinstance(finalList[k][j][i][key], str):
+                        saveStr = "%s: %s" % (key, finalList[k][j][i][key])
+                        print saveStr
+                        saveList.append(saveStr)
+                        d00d = raw_input('THIS SHIT IS REAL DAWG')
+                    elif isinstance(finalList[k][j][i][key], dict):
+                        for key2 in finalList[k][j][i][key]:
+                            attrStr = ""
+                            attrStr = attrStr + "%s#%s#" % (key2, finalList[k][j][i][key][key2])
+                            # Strip the trailing octothorpe
+                            attrStr = attrStr[:len(attrStr) - 1]
+                        saveStr = "%s: %s" % (key, attrStr)
+                        print saveStr
+                        saveList.append(saveStr)
+                        d00d = raw_input('THIS SHIT IS REAL DAWG')
+
+    # Now we write the save file.
+    saveFile = open(saveFileName, 'w')
+    saveFile.write('\n'.join(saveList))
+    saveFile.close
